@@ -35,6 +35,14 @@ namespace IISLogParser
       }
     }
 
+    public List<string> FieldNames
+    {
+      get
+      {
+        return _fieldNames;
+      }
+    }
+
     public void ParseLog(string fileName)
     {
       ParseLog(fileName, null);
@@ -65,6 +73,26 @@ namespace IISLogParser
           _logFile.Add(ParseLine(line, _fieldNames));
         }
       }
+    }
+
+    public List<string> Distinct(string field)
+    {
+      List<string> ret = new List<string>();
+      foreach (Dictionary<string, string> row in _logFile)
+      {
+        ret.Add(row[field]);
+      }
+      return ret.Distinct().ToList();
+    }
+
+    public DictionaryCount DistinctCount(string field)
+    {
+      DictionaryCount ret = new DictionaryCount();
+      foreach (Dictionary<string, string> row in _logFile)
+      {
+        ret.Add(row[field]);
+      }
+      return ret;
     }
 
     private Dictionary<string, string> ParseLine(string line, List<string> fieldNames)
