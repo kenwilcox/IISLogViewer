@@ -12,6 +12,8 @@ namespace IISLogViewer
 {
   public partial class frmMain : Form
   {
+    private string _logFile;
+
     public frmMain()
     {
       InitializeComponent();
@@ -24,20 +26,34 @@ namespace IISLogViewer
       Application.DoEvents();
     }
 
-    private void btnGo_Click(object sender, EventArgs e)
+    private void ParseLogFile()
     {
       Cursor.Current = Cursors.WaitCursor;
       progress.Visible = true;
 
       LogParser parser = new LogParser();
-      parser.ParseLog(@"..\..\u_ex120921.log", UpdateProgress);
-      
+      parser.ParseLog(_logFile, UpdateProgress);
+
       DataTable table = parser.GridList;
       grid.DataSource = table;
       lblCount.Text = String.Format("Count: {0:n0}", table.Rows.Count);
-      
+
+      grid.Columns[grid.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
       Cursor.Current = Cursors.Default;
       progress.Visible = false;
+    }
+
+    private void btnGo_Click(object sender, EventArgs e)
+    {
+      //_logFile = @"..\..\u_ex120921.log";
+      //ParseLogFile();
+      if (openFileDlg.ShowDialog(this) == DialogResult.OK)
+      {
+        _logFile = openFileDlg.FileName;
+        txtPath.Text = _logFile;
+        ParseLogFile();
+      }
     }
   }
 }
