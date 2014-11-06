@@ -24,6 +24,7 @@ namespace IISLogViewer
       progress.Maximum = count;
       progress.Value = position;
       Application.DoEvents();
+      Cursor.Current = Cursors.WaitCursor;
     }
 
     private void ParseLogFile()
@@ -46,14 +47,15 @@ namespace IISLogViewer
 
     private void btnGo_Click(object sender, EventArgs e)
     {
-      //_logFile = @"..\..\u_ex120921.log";
-      //ParseLogFile();
+      DateTime start = DateTime.Now;
       if (openFileDlg.ShowDialog(this) == DialogResult.OK)
       {
         _logFile = openFileDlg.FileName;
         txtPath.Text = _logFile;
         ParseLogFile();
       }
+      TimeSpan time = DateTime.Now - start;
+      lblCount.Text += " - (" + time.Duration().ToString() + ")";
     }
   }
 }
